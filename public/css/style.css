@@ -831,6 +831,10 @@ PAGE BANNER
 /*---------------------------
 CONTACT PAGE
 -----------------------------*/
+#contact {
+	padding-top: 40px;
+}
+
 #contact-info {
 	padding-top: 90px;
 }
