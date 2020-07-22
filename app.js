@@ -1,16 +1,26 @@
 require('dotenv').config();
 
-const express = require("express"),
-    bodyParser = require("body-parser"),
-    exphbs = require("express-handlebars"),
-    nodemailer = require("nodemailer"),
-    app = express();
+const 	express 		= require("express"),
+    	bodyParser 		= require("body-parser"),
+	  	cookieParser	= require("cookie-parser"),
+	  	session			= require("express-session"),
+	  	flash			= require("connect-flash"),
+    	nodemailer 		= require("nodemailer"),
+    	app 			= express();
 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use(cookieParser());
+app.use(session({
+	secret: "secret",
+	cookie: { maxAge: 60000},
+	resave: false,
+	saveUninitialized: false
+}));
+app.use(flash());
 
 
 //root route - home page
@@ -20,11 +30,11 @@ app.get("/", function(req, res) {
 
 //contact route
 app.get("/contact", function(req, res) {
-    res.render("contact");
+    res.render("contact", { msg: req.flash("msg")});
 });
 
 //contact POST route
-app.post("/contact", function(req, res) {
+app.post("/contact", function(req, res, next) {
     const output = `
 	<p> You have a new Contact request</p>
 	<h3>Contact Details</h3>
@@ -70,9 +80,8 @@ app.post("/contact", function(req, res) {
         console.log('Message sent: %s', info.messageId);
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-        res.render('contact', {
-            msg: 'Email has been sent'
-        });
+        req.flash("msg", "Email has been sent.");
+		res.redirect("contact");
     });
 });
 

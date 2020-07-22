@@ -11,6 +11,11 @@
             <p class="mb-5 ">
                Use the form below to drop us an email
             </p>
+            <% if(msg.length > 0) { %>
+            <div class="alert alert-success">
+               <%= msg %>
+            </div>
+            <% } %>
          </div>
       </div>
       <!-- / .row -->
